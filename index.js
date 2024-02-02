@@ -77,20 +77,21 @@ app.post("/api/persons", (req, res) => {
         });
     }
 
-    // if (persons.find((person) => person.name === body.name)) {
-    //     return res.status(400).json({
-    //         error: "name must be unique",
-    //     });
-    // }
-
     const person = new Person({
         name: body.name,
         number: body.number,
     });
 
-    person.save().then((savedPerson) => {
-        res.json(savedPerson);
-    });
+    person.validateSync();
+
+    person
+        .save()
+        .then((savedPerson) => {
+            res.json(savedPerson);
+        })
+        .catch((error) => {
+            res.status(400).json({ error: error.message });
+        });
 });
 
 app.listen(PORT, () => {
